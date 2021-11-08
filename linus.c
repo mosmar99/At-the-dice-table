@@ -76,8 +76,52 @@ void twoDicePig(){
 
 }
 
+// roll single die
+int rollDie(bool npc){
+    sleep(2);
+    int die = 1 + (rand() % 6);
+    if(npc) printf("NPC");  // prints correct output depending on if the player or the computer rolled dice
+    else printf("Player");
+    printf(" rolled %d\n",die);
+    return die;
+}
+
 void abyss(){
-    puts("abyss");
+    srand(time(NULL));
+
+    int playerSum = 0;
+    int npcSum = 0;
+    enum Status gameStatus = CONTINUE;
+
+    while(gameStatus == CONTINUE){
+        // player's turn
+        puts("");
+        playerSum += rollDie(false);    // npc = false
+        printf("Player sum: %d\n\n",playerSum);
+        if(playerSum == 26){
+            gameStatus = WON;
+            break;
+        }else if(playerSum == 13 || playerSum > 26){
+            gameStatus = LOST;
+            break;
+        }else if(playerSum >= 1 && playerSum <= 12 && playerSum == npcSum) playerSum = 0;
+        else if(playerSum >= 14 && playerSum <= 24 && playerSum == npcSum) playerSum = 12;
+        else if(playerSum == 25 && npcSum == 25) playerSum = 14;
+
+        // npc's turn
+        npcSum += rollDie(true);    // npc = true
+        printf("NPC sum: %d\n",npcSum);
+        if(npcSum == 26) gameStatus = LOST;
+        else if(npcSum == 13 || npcSum > 26) gameStatus = WON;
+        else if(npcSum >= 1 && npcSum <= 12 && npcSum == playerSum) npcSum = 0;
+        else if(npcSum >= 14 && npcSum <= 24 && npcSum == playerSum) npcSum = 12;
+        else if(npcSum == 25 && playerSum == 25) npcSum = 14;
+    }
+
+    sleep(1);
+    puts("");
+    gameStatus == WON ? puts("Player wins") : puts("Player loses");
+    sleep(2);
 }
 
 int main(){
