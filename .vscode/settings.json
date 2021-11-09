@@ -3,6 +3,6 @@
         "time.h": "c",
         "unistd.h": "c",
         "stdbool.h": "c",
-        "stdio.h": "c"sss
+        "stdio.h": "c"
     }
 }
