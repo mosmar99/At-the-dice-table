@@ -217,8 +217,8 @@ unsigned int pigsNPCTurn(unsigned int sum){
     unsigned npcTurnTotal = 0;
 
     for(unsigned int i = 0; i < 2; i++){    // roll two times
-        if(npcTurnTotal + sum >= 100) return npcTurnTotal;  // if the turns accumulated score is enough to win, it stops rolling dice (guaranteed win if this executes)
-        die = rollDie(true);
+        if(npcTurnTotal + sum >= 100) return npcTurnTotal;  // if the turns accumulated score is enough to win,
+        die = rollDie(true);                                // it stops rolling dice (guaranteed win if this executes)
         if(die == 1){
             printf("Total: %d\n\n",0);
             return 0;
