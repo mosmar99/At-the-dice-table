@@ -27,6 +27,7 @@ void pig(void) {
     enum PlayerTurn playerTurn = Human; // per lab instructions
     unsigned int pHuman, pComputer; // p = points
 
+
     
 
     
