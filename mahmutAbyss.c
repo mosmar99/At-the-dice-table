@@ -68,7 +68,7 @@ void abyss(void) {
     unsigned int pA = 0, pB = 0, face; // points player A, points player B, face = points on current face after die roll
 
     // randomize who starts
-    enum PlayerTurn playerTurn = getWhoStarts(); // init player who start
+    enum PlayerTurn playerTurn = A; // init player who start
     enum Status gameState = CONTINUE;
 
     while (gameState == CONTINUE) {
@@ -81,7 +81,7 @@ void abyss(void) {
                 pA -= face;
                 //printState(playerTurn, pA, pB, face);
                 //playerTurn = switchTurns(playerTurn);
-                continue;
+                //continue;
             }
         }
         else
@@ -91,7 +91,7 @@ void abyss(void) {
                 pB -= face;
                 //printState(playerTurn, pA, pB, face);
                 //playerTurn = switchTurns(playerTurn);
-                continue;
+                //continue;
             }
         }
 

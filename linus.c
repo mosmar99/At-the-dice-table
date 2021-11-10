@@ -13,7 +13,6 @@ void displayMainMenu();
 int rollDice();
 unsigned int rollDie(bool);
 unsigned int pigsPlayerTurn();  // returns total points for a turn
-unsigned int pigsNPCThrow();
 unsigned int pigsNPCTurn(); // returns total points for a turn
 
 int main(){
@@ -157,7 +156,7 @@ void pigs(){
         // npc's turn
         puts("\n\n-----NPC's turn-----");
         npcScore += pigsNPCTurn();
-        printf("NPC score: %d\n",npcScore);
+        printf("NPC score: %d\n\n\n",npcScore);
         if(npcScore >= 100) gameStatus = LOST;
     }
 }
@@ -205,22 +204,22 @@ unsigned int pigsPlayerTurn(){
     }
 }
 
-unsigned int pigsNPCThrow(){    // returns die value according to the rules
-    unsigned int die = rollDie(true);
-    if(die == 1) return 0;  // rule 1
-    return die;
-}
-
 unsigned int pigsNPCTurn(){
+    unsigned int die;
     unsigned npcTurnTotal = 0;
 
     for(unsigned int i = 0; i < 2; i++){    // roll two times
-        npcTurnTotal += pigsNPCThrow();    // rule 2
-        printf("Total: %d\n",npcTurnTotal);
+        die = rollDie(true);
+        if(die == 1){
+            printf("Total: %d\n\n",0);
+            return 0;    
+        }
+        npcTurnTotal += die;    // rule 2
+        printf("Total: %d\n\n",npcTurnTotal);
     }
 
     unsigned int bin = rand() % 2;  // bin = [0,1]
-    if(bin) npcTurnTotal += pigsNPCThrow(); // roll a third time on a 50% chance
-    printf("Total: %d\n",npcTurnTotal);
+    //asdasdif(bin) npcTurnTotal += pigsNPCThrow(); // roll a third time on a 50% chance
+    printf("Total: %d\n\n",npcTurnTotal);
     return npcTurnTotal;
 }
