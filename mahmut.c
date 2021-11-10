@@ -5,7 +5,7 @@ void menu(void);
 int main(void) {
     clock_t begin = clock();
     // --------- S T A R T  T O  C O D E  H E R E ---------
-
+    
     menu();
 
     // --------- E N D  O F  C O D E ---------

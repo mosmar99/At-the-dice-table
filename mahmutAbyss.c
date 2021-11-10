@@ -14,7 +14,6 @@ unsigned int rollDie(void) {
 
 enum PlayerTurn getWhoStarts() {
     unsigned int r;
-    srand(time(NULL));   // Init, places a seed based on a fixed and calculated time intervall
     r = 1 + (rand() % 2); // Returns a pseudo-random integer between 0 and RAND_MAX.
 
     if (r == 1) {
@@ -38,11 +37,13 @@ void printState(enum PlayerTurn currTurn, unsigned int pA, unsigned int pB, unsi
        
         if (currTurn == A) 
         {
-            printf("\nPlayer A: \n---> Current throw: %u\n---> Current sum: %u\n", face, pA);
+            unsigned int prev = pA - face;
+            printf("\nPlayer A: \n---> Current throw: %u\n---> Current sum: %u + %u = %u\n", face, prev, face, pA);
         }
         else
         {
-            printf("\nPlayer B:\n---> Current throw: %u\n---> Current sum: %u\n", face, pB);
+            unsigned int prev = pB - face;
+            printf("\nPlayer B:\n---> Current throw: %u\n---> Current sum: %u + %u = %u\n", face, prev, face, pB);
         }
 }
 
@@ -65,10 +66,11 @@ char getOtherPlayer(enum PlayerTurn playerTurn) {
 void abyss(void) {
 
     // points
-    unsigned int pA = 0, pB = 0, face; // points player A, points player B, face = points on current face after die roll
+    unsigned int pA = 0, pB = 0, face, factor = 1000000; // points player A, points player B, face = points on current face after die roll
+    float delay = 0.8;
 
     // randomize who starts
-    enum PlayerTurn playerTurn = A; // init player who start
+    enum PlayerTurn playerTurn = getWhoStarts(); // init player who start
     enum Status gameState = CONTINUE;
 
     while (gameState == CONTINUE) {
@@ -79,9 +81,6 @@ void abyss(void) {
             pA += face;
             if ( pA > 26 ) {
                 pA -= face;
-                //printState(playerTurn, pA, pB, face);
-                //playerTurn = switchTurns(playerTurn);
-                //continue;
             }
         }
         else
@@ -89,25 +88,24 @@ void abyss(void) {
             pB += face;
             if ( pB > 26 ) {
                 pB -= face;
-                //printState(playerTurn, pA, pB, face);
-                //playerTurn = switchTurns(playerTurn);
-                //continue;
             }
         }
 
         printState(playerTurn, pA, pB, face);
 
+        usleep(delay * factor);
+
         if (pA == 26 || pB == 26) {
-            char chTurn = getWhoseTurn(gameState);
-            char chNotTurn = getOtherPlayer(gameState);
+            char chTurn = getWhoseTurn(playerTurn);
+            char chNotTurn = getOtherPlayer(playerTurn);
             printf("\nThe sum of player \"%c\" equals 26!\n---> Player \"%c\" WON and player \"%c\" LOST!\n", chTurn, chTurn, chNotTurn);
             gameState = WON;
         }
 
         if (pA > 26 || pB > 26)
         {
-            char chTurn = getWhoseTurn(gameState);
-            char chNotTurn = getOtherPlayer(gameState);
+            char chTurn = getWhoseTurn(playerTurn);
+            char chNotTurn = getOtherPlayer(playerTurn);
             printf("\nThe sum of player \"%c\" is higher than 26!\n---> Player \"%c\" LOST!\n and player \"%c\" WON!", chTurn, chTurn, chNotTurn);
             gameState = LOST;
         }
@@ -115,8 +113,8 @@ void abyss(void) {
 
         if (pA == 13 || pB == 13)
         {
-            char chTurn = getWhoseTurn(gameState);
-            char chNotTurn = getOtherPlayer(gameState);
+            char chTurn = getWhoseTurn(playerTurn);
+            char chNotTurn = getOtherPlayer(playerTurn);
             printf("\nThe sum of player \"%c\" equals 13!\n---> Player \"%c\" fell into abyss and LOST! Player \"%c\" WON!\n", chTurn, chTurn, chNotTurn);
             gameState = LOST;
         }

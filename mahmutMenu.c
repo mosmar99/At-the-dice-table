@@ -56,7 +56,7 @@ void launchChoice(unsigned int gameChoice){
 }
 
 void menu(void) {
-    unsigned int gameChoice = rand(); // initialize gameChoice to a random variable for the while loop
+    unsigned int gameChoice = 42; // initialize gameChoice to a random variable for the while loop
     while (gameChoice != 0) {
         gameChoice = chooseGame(); // chooseGame filters wrong choices, if gameChoice is assigned, it must have values 0-3
         launchChoice(gameChoice);
