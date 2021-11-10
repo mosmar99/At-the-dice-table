@@ -13,7 +13,7 @@ void displayMainMenu();
 int rollDice();
 unsigned int rollDie(bool); // roll a single die
 unsigned int pigsPlayerTurn();  // returns total points of a turn for the player
-unsigned int pigsNPCTurn(); // returns total points of a turn for the npc
+unsigned int pigsNPCTurn(unsigned int); // returns total points of a turn for the npc
 
 int main(){
     unsigned int answer;
