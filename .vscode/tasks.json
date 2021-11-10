@@ -8,6 +8,10 @@
                 "-fdiagnostics-color=always",
                 "-g",
                 "${file}",
+                "mahmutMenu.c",
+                "mahmutCraps.c",
+                "mahmutAbyss.c",
+                "mahmutPig.c",
                 "-o",
                 "${fileDirname}/${fileBasenameNoExtension}"
             ],

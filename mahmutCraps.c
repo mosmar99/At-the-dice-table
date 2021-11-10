@@ -56,6 +56,7 @@ void craps(void) {
             }
         }
     }
+    
     // display won or lost message
     if (WON == gameStatus) { // did player win?
         puts("Player wins");

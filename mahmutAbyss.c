@@ -22,7 +22,6 @@ enum PlayerTurn getWhoStarts() {
     } else {
         return B;
     }
-    
 }
 
 enum PlayerTurn switchTurns(enum PlayerTurn currTurn) {

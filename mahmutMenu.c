@@ -22,6 +22,7 @@ void txtMenu(void) {
 
 unsigned int chooseGame(void) {
     unsigned int gameChoice;
+    
     txtMenu();
     scanf("%u", &gameChoice);
     if (gameChoice < 0 || gameChoice > 3)

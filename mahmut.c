@@ -1,7 +1,6 @@
 #include "mahmutHeaders.h"
 
 void menu(void);
-void abyss(void);
 
 int main(void) {
     clock_t begin = clock();
