@@ -219,7 +219,7 @@ unsigned int pigsNPCTurn(){
     }
 
     unsigned int bin = rand() % 2;  // bin = [0,1]
-    if(bin) npcTurnTotal += pigsNPCThrow(); // roll a third time on a 50% chance
+    //asdasdif(bin) npcTurnTotal += pigsNPCThrow(); // roll a third time on a 50% chance
     printf("Total: %d\n\n",npcTurnTotal);
     return npcTurnTotal;
 }
