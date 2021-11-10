@@ -77,10 +77,10 @@ void twoDicePig(){
 }
 
 // roll single die
-int rollDie(bool npc){
+unsigned int rollDie(bool npc){
     sleep(2);
     int die = 1 + (rand() % 6);
-    if(npc) printf("NPC");  // prints correct output depending on if the player or the computer rolled dice
+    if(npc) printf("NPC");  // prints correct output depending on if the player or the computer rolled the die
     else printf("Player");
     printf(" rolled %d\n",die);
     return die;
@@ -89,34 +89,43 @@ int rollDie(bool npc){
 void abyss(){
     srand(time(NULL));
 
-    int playerSum = 0;
-    int npcSum = 0;
+    unsigned int playerSum = 0;
+    unsigned int npcSum = 0;
     enum Status gameStatus = CONTINUE;
 
-    while(gameStatus == CONTINUE){
+    while(gameStatus == CONTINUE){  // gameplay loop
         // player's turn
         puts("");
-        playerSum += rollDie(false);    // npc = false
-        printf("Player sum: %d\n\n",playerSum);
-        if(playerSum == 26){
-            gameStatus = WON;
-            break;
-        }else if(playerSum == 13 || playerSum > 26){
-            gameStatus = LOST;
-            break;
-        }else if(playerSum >= 1 && playerSum <= 12 && playerSum == npcSum) playerSum = 0;
-        else if(playerSum >= 14 && playerSum <= 24 && playerSum == npcSum) playerSum = 12;
-        else if(playerSum == 25 && npcSum == 25) playerSum = 14;
+        unsigned int die = rollDie(false);    // npc = false
+        sleep(1);
+        if(playerSum + die <= 26){  // throws that yield sum > 26 doesn't count
+            playerSum += die;
+            printf("Player sum: %d\n\n",playerSum);
+            if(playerSum == 13){  // rule 1
+                gameStatus = LOST;
+                break;  // disregard npc's turn if game is already over
+            }else if(playerSum >= 1 && playerSum <= 12 && playerSum == npcSum) playerSum = 0;   // rule 2
+            else if(playerSum >= 14 && playerSum <= 24 && playerSum == npcSum) playerSum = 12;  // rule 3
+            else if(playerSum == 25 && npcSum == 25) playerSum = 14;    // rule 4
+            else if(playerSum == 26){    // rule 5
+                gameStatus = WON;
+                break;  // disregard npc's turn if game is already over
+            }
+        }else printf("Threw discarded, yielded sum: %d\n\n",playerSum + die);   // invalid throw
 
         // npc's turn
-        npcSum += rollDie(true);    // npc = true
-        printf("NPC sum: %d\n",npcSum);
-        if(npcSum == 26) gameStatus = LOST;
-        else if(npcSum == 13 || npcSum > 26) gameStatus = WON;
-        else if(npcSum >= 1 && npcSum <= 12 && npcSum == playerSum) npcSum = 0;
-        else if(npcSum >= 14 && npcSum <= 24 && npcSum == playerSum) npcSum = 12;
-        else if(npcSum == 25 && playerSum == 25) npcSum = 14;
-    }
+        die = rollDie(true);    // npc = true
+        sleep(1);
+        if(npcSum + die <= 26){ // throws that yield sum > 26 doesn't count
+            npcSum += die;
+            printf("NPC sum: %d\n",npcSum);
+            if(npcSum == 13) gameStatus = WON;  // rule 1
+            else if(npcSum >= 1 && npcSum <= 12 && npcSum == playerSum) npcSum = 0; // rule 2
+            else if(npcSum >= 14 && npcSum <= 24 && npcSum == playerSum) npcSum = 12;   // rule 3
+            else if(npcSum == 25 && playerSum == 25) npcSum = 14;   // rule 4
+            else if(npcSum == 26) gameStatus = LOST;    // rule 5
+        }else printf("Threw discarded, yielded sum: %d\n",npcSum + die);  // invalid throw
+    }   // end gameplay loop
 
     sleep(1);
     puts("");
@@ -125,7 +134,7 @@ void abyss(){
 }
 
 int main(){
-    int answer;
+    unsigned int answer;
     bool exit = false;
     while(!exit){
         displayMainMenu();
