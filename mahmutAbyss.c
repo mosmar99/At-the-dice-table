@@ -79,6 +79,8 @@ void abyss(void) {
             pA += face;
             if ( pA > 26 ) {
                 pA -= face;
+                //printState(playerTurn, pA, pB, face);
+                //playerTurn = switchTurns(playerTurn);
                 continue;
             }
         }
@@ -87,6 +89,8 @@ void abyss(void) {
             pB += face;
             if ( pB > 26 ) {
                 pB -= face;
+                //printState(playerTurn, pA, pB, face);
+                //playerTurn = switchTurns(playerTurn);
                 continue;
             }
         }
