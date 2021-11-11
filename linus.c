@@ -107,34 +107,6 @@ void craps()
     sleep(2);
 }
 
-enum Status checkStatus(unsigned int sum)
-{
-    if (sum == 13)
-    { // rule 1
-        return LOST;
-    }
-    else if (sum == 26)
-    { // rule 5
-        return WON;
-    }
-    else
-    {
-        return CONTINUE;
-    }
-}
-
-unsigned int checkSum(unsigned int playerSum, unsigned int npcSum)
-{
-    if (playerSum >= 1 && playerSum <= 12 && playerSum == npcSum)
-        return 0; // rule 2
-    else if (playerSum >= 14 && playerSum <= 24 && playerSum == npcSum)
-        return 12; // rule 3
-    else if (playerSum == 25 && npcSum == 25)
-        return 14; // rule 4
-    else
-        return playerSum;
-}
-
 void abyss()
 {
     srand(time(NULL));
@@ -153,8 +125,9 @@ void abyss()
         { // throws that yield sum > 26 doesn't count
             playerSum += die;
             printf("Player sum: %d\n\n", playerSum);
-            gameStatus = checkStatus(playerSum);
-            playerSum = checkSum(playerSum, npcSum);
+            gameStatus = checkPlayerStatus(playerSum);
+            if(gameStatus == LOST) break;   // disregard npc's turn
+            playerSum = checkPlayerSum(playerSum, npcSum);
         }
         else
             printf("Threw discarded, yielded sum: %d\n\n", playerSum + die); // invalid throw
@@ -185,6 +158,34 @@ void abyss()
     puts("");
     gameStatus == WON ? puts("Player wins") : puts("Player loses");
     sleep(2);
+}
+
+enum Status checkPlayerStatus(unsigned int sum)
+{
+    if (sum == 13)
+    { // rule 1
+        return LOST;
+    }
+    else if (sum == 26)
+    { // rule 5
+        return WON;
+    }
+    else
+    {
+        return CONTINUE;
+    }
+}
+
+unsigned int checkPlayerSum(unsigned int playerSum, unsigned int npcSum)
+{
+    if (playerSum >= 1 && playerSum <= 12 && playerSum == npcSum)
+        return 0; // rule 2
+    else if (playerSum >= 14 && playerSum <= 24 && playerSum == npcSum)
+        return 12; // rule 3
+    else if (playerSum == 25 && npcSum == 25)
+        return 14; // rule 4
+    else
+        return playerSum;
 }
 
 void pigs()
