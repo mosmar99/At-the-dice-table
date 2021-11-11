@@ -13,6 +13,10 @@ enum Status
 
 void craps(); // I added blank lines and delays in related functions to make the output more appealing and "exciting"
 void abyss();
+enum Status checkPlayerStatus(unsigned int sum);                          // aply rules 1 and 5
+unsigned int checkPlayerSum(unsigned int playerSum, unsigned int npcSum); // apply rules 2-4
+enum Status checkNPCStatus(unsigned int sum);                             // aply rules 1 and 5
+unsigned int checkNPCSum(unsigned int playerSum, unsigned int npcSum);    // apply rules 2-4
 void pigs();
 void displayMainMenu();
 int rollDice();
@@ -125,9 +129,10 @@ void abyss()
         { // throws that yield sum > 26 doesn't count
             playerSum += die;
             printf("Player sum: %d\n\n", playerSum);
-            gameStatus = checkPlayerStatus(playerSum);
-            if(gameStatus == LOST) break;   // disregard npc's turn
-            playerSum = checkPlayerSum(playerSum, npcSum);
+            playerSum = checkPlayerSum(playerSum, npcSum); // check rules 2-4
+            gameStatus = checkPlayerStatus(playerSum);     // check rules 1 and 5
+            if (gameStatus == LOST)
+                break; // disregard npc's turn
         }
         else
             printf("Threw discarded, yielded sum: %d\n\n", playerSum + die); // invalid throw
@@ -139,16 +144,8 @@ void abyss()
         { // throws that yield sum > 26 doesn't count
             npcSum += die;
             printf("NPC sum: %d\n", npcSum);
-            if (npcSum == 13)
-                gameStatus = WON; // rule 1
-            else if (npcSum >= 1 && npcSum <= 12 && npcSum == playerSum)
-                npcSum = 0; // rule 2
-            else if (npcSum >= 14 && npcSum <= 24 && npcSum == playerSum)
-                npcSum = 12; // rule 3
-            else if (npcSum == 25 && playerSum == 25)
-                npcSum = 14; // rule 4
-            else if (npcSum == 26)
-                gameStatus = LOST; // rule 5
+            npcSum = checkNPCSum(playerSum, npcSum); // check rules 2-4
+            gameStatus = checkNPCStatus(npcSum);     // check rules 1 and 5
         }
         else
             printf("Threw discarded, yielded sum: %d\n", npcSum + die); // invalid throw
@@ -186,6 +183,28 @@ unsigned int checkPlayerSum(unsigned int playerSum, unsigned int npcSum)
         return 14; // rule 4
     else
         return playerSum;
+}
+
+enum Status checkNPCStatus(unsigned int sum)
+{
+    if (sum == 26)
+        return LOST; // rule 5
+    else if (sum == 13)
+        return WON; // rule 1
+    else
+        return CONTINUE;
+}
+
+unsigned int checkNPCSum(unsigned int playerSum, unsigned int npcSum)
+{
+    if (npcSum >= 1 && npcSum <= 12 && npcSum == playerSum)
+        npcSum = 0; // rule 2
+    else if (npcSum >= 14 && npcSum <= 24 && npcSum == playerSum)
+        npcSum = 12; // rule 3
+    else if (npcSum == 25 && playerSum == 25)
+        npcSum = 14; // rule 4
+    else
+        return npcSum;
 }
 
 void pigs()
