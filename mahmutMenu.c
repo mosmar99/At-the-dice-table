@@ -1,10 +1,5 @@
 #include "mahmutHeaders.h"
 
-// include game functions
-// #include "mahmutCraps.h"
-// #include "mahmutAbyss.h"
-// #include "mahmutPig.h"
-
 void craps(void);
 void abyss(void);
 void pig(void);
