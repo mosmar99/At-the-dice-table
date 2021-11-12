@@ -97,24 +97,15 @@ void abyss(void) {
         if (pA == 26 || pB == 26) {
             char chTurn = getWhoseTurn(playerTurn);
             char chNotTurn = getOtherPlayer(playerTurn);
-            printf("\nThe sum of player \"%c\" equals 26!\n---> Player \"%c\" WON and player \"%c\" LOST!\n", chTurn, chTurn, chNotTurn);
+            printf("\nThe sum of player \"%c\" equals 26!\n---> Player \"%c\" WON and player \"%c\" LOST!\n\n", chTurn, chTurn, chNotTurn);
             gameState = WON;
         }
-
-        if (pA > 26 || pB > 26)
-        {
-            char chTurn = getWhoseTurn(playerTurn);
-            char chNotTurn = getOtherPlayer(playerTurn);
-            printf("\nThe sum of player \"%c\" is higher than 26!\n---> Player \"%c\" LOST!\n and player \"%c\" WON!", chTurn, chTurn, chNotTurn);
-            gameState = LOST;
-        }
-        
 
         if (pA == 13 || pB == 13)
         {
             char chTurn = getWhoseTurn(playerTurn);
             char chNotTurn = getOtherPlayer(playerTurn);
-            printf("\nThe sum of player \"%c\" equals 13!\n---> Player \"%c\" fell into abyss and LOST! Player \"%c\" WON!\n", chTurn, chTurn, chNotTurn);
+            printf("\nThe sum of player \"%c\" equals 13!\n---> Player \"%c\" fell into abyss and LOST! Player \"%c\" WON!\n\n", chTurn, chTurn, chNotTurn);
             gameState = LOST;
         }
 

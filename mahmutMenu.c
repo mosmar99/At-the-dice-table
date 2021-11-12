@@ -5,7 +5,7 @@ void abyss(void);
 void pig(void);
 
 void txtMenu(void) {
-    char qsOne[] = "\nWhich game would you like to play?";
+    char qsOne[] = "Which game would you like to play?";
     char crapstxt[] = "Enter 1 for Craps";
     char abysstxt[] = "Enter 2 for The Abyss";
     char pigtxt[]   = "Enter 3 for Pig";
