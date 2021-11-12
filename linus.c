@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include <unistd.h> // sleep(unsigned int seconds)
+#include <unistd.h> // sleep(unsigned int seconds)      (_sleep() from stdlib.h is deprecated)
 #include <time.h>
 
 enum Status
@@ -11,18 +11,18 @@ enum Status
     LOST
 };
 
-void craps(); // I added blank lines and delays in related functions to make the output more appealing and "exciting"
+void craps();   // I added blank lines and delays in related functions to make the output more appealing and "exciting"
+int rollDice(); // only used in craps
 void abyss();
-enum Status checkPlayerStatus(unsigned int sum);                          // aply rules 1 and 5
-unsigned int checkPlayerSum(unsigned int playerSum, unsigned int npcSum); // apply rules 2-4
-enum Status checkNPCStatus(unsigned int sum);                             // aply rules 1 and 5
-unsigned int checkNPCSum(unsigned int playerSum, unsigned int npcSum);    // apply rules 2-4
+enum Status checkPlayerStatus(unsigned int sum);                          // apply rules 1 and 5 on the human player
+unsigned int checkPlayerSum(unsigned int playerSum, unsigned int npcSum); // apply rules 2-4 on the human player
+enum Status checkNPCStatus(unsigned int sum);                             // apply rules 1 and 5 on the computer
+unsigned int checkNPCSum(unsigned int playerSum, unsigned int npcSum);    // apply rules 2-4 on the computer
 void pigs();
-void displayMainMenu();
-int rollDice();
-unsigned int rollDie(bool);             // roll a single die
 unsigned int pigsPlayerTurn();          // returns total points of a turn for the player
 unsigned int pigsNPCTurn(unsigned int); // returns total points of a turn for the npc
+void displayMainMenu();
+unsigned int rollDie(bool); // roll a single die
 
 int main()
 {
@@ -111,6 +111,15 @@ void craps()
     sleep(2);
 }
 
+int rollDice()
+{
+    sleep(2);
+    int die1 = 1 + (rand() % 6);
+    int die2 = 1 + (rand() % 6);
+    printf("Player rolled %d + %d = %d\n", die1, die2, die1 + die2);
+    return die1 + die2;
+}
+
 void abyss()
 {
     srand(time(NULL));
@@ -160,17 +169,11 @@ void abyss()
 enum Status checkPlayerStatus(unsigned int sum)
 {
     if (sum == 13)
-    { // rule 1
-        return LOST;
-    }
+        return LOST; // rule 1
     else if (sum == 26)
-    { // rule 5
-        return WON;
-    }
+        return WON; // rule 5
     else
-    {
-        return CONTINUE;
-    }
+        return CONTINUE; // do nothing
 }
 
 unsigned int checkPlayerSum(unsigned int playerSum, unsigned int npcSum)
@@ -182,7 +185,7 @@ unsigned int checkPlayerSum(unsigned int playerSum, unsigned int npcSum)
     else if (playerSum == 25 && npcSum == 25)
         return 14; // rule 4
     else
-        return playerSum;
+        return playerSum; // do nothing
 }
 
 enum Status checkNPCStatus(unsigned int sum)
@@ -192,7 +195,7 @@ enum Status checkNPCStatus(unsigned int sum)
     else if (sum == 13)
         return WON; // rule 1
     else
-        return CONTINUE;
+        return CONTINUE; // do nothing
 }
 
 unsigned int checkNPCSum(unsigned int playerSum, unsigned int npcSum)
@@ -204,7 +207,7 @@ unsigned int checkNPCSum(unsigned int playerSum, unsigned int npcSum)
     else if (npcSum == 25 && playerSum == 25)
         npcSum = 14; // rule 4
     else
-        return npcSum;
+        return npcSum; // do nothing
 }
 
 void pigs()
@@ -220,7 +223,7 @@ void pigs()
         // player's turn
         sleep(1);
         puts("-----Your turn-----");
-        playerScore += pigsPlayerTurn();
+        playerScore += pigsPlayerTurn(); // do a turn
         printf("Player score: %d\n", playerScore);
         if (playerScore >= 100)
         {
@@ -232,7 +235,7 @@ void pigs()
         sleep(1);
         puts("\n\n-----NPC's turn-----");
         sleep(1);
-        npcScore += pigsNPCTurn(npcScore); // argument used to enhance the NPCs strategy
+        npcScore += pigsNPCTurn(npcScore); // do a turn (argument used to enhance the NPCs strategy)
         sleep(1);
         printf("NPC score: %d\n\n\n", npcScore);
         if (npcScore >= 100)
@@ -240,39 +243,8 @@ void pigs()
     } // end gameplay loop
 
     sleep(1);
-    puts("");
-    gameStatus == WON ? puts("Player wins") : puts("Player loses");
+    gameStatus == WON ? puts("\nPlayer wins") : puts("\nPlayer loses");
     sleep(2);
-}
-
-void displayMainMenu()
-{
-    puts("\n\nWhich game would you like to play?");
-    puts("  Enter 1 for Craps");
-    puts("  Enter 2 for The Abyss");
-    puts("  Enter 3 for Pig");
-    puts("Enter 0 to Quit");
-}
-
-int rollDice()
-{
-    sleep(2);
-    int die1 = 1 + (rand() % 6);
-    int die2 = 1 + (rand() % 6);
-    printf("Player rolled %d + %d = %d\n", die1, die2, die1 + die2);
-    return die1 + die2;
-}
-
-unsigned int rollDie(bool npc)
-{
-    sleep(2);
-    int die = 1 + (rand() % 6);
-    if (npc)
-        printf("%s", "NPC"); // prints correct output depending on if the player or the computer rolled the die
-    else
-        printf("%s", "Player");
-    printf(" rolled %d\n", die);
-    return die;
 }
 
 unsigned int pigsPlayerTurn()
@@ -304,8 +276,8 @@ unsigned int pigsNPCTurn(unsigned int sum)
     for (unsigned int i = 0; i < 2; i++)
     { // roll two times
         if (npcTurnTotal + sum >= 100)
-            return npcTurnTotal; // if the turns accumulated score is enough to win,
-        die = rollDie(true);     // it stops rolling dice (guaranteed win if this executes)
+            return npcTurnTotal; // if the turns accumulated score is enough to win, it
+        die = rollDie(true);     // stops rolling dice (guaranteed win for the computer if this executes)
         if (die == 1)
         {
             printf("Total: %d\n\n", 0);
@@ -328,4 +300,25 @@ unsigned int pigsNPCTurn(unsigned int sum)
         printf("Total: %d\n\n", npcTurnTotal);
     }
     return npcTurnTotal;
+}
+
+void displayMainMenu()
+{
+    puts("\n\nWhich game would you like to play?");
+    puts("  Enter 1 for Craps");
+    puts("  Enter 2 for The Abyss");
+    puts("  Enter 3 for Pig");
+    puts("Enter 0 to Quit");
+}
+
+unsigned int rollDie(bool npc)
+{
+    sleep(2);
+    int die = 1 + (rand() % 6); // die = [1,6]
+    if (npc)
+        printf("%s", "NPC"); // prints correct output depending on if the player or the computer rolled the die
+    else
+        printf("%s", "Player");
+    printf(" rolled %d\n", die);
+    return die;
 }
