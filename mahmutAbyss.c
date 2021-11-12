@@ -6,8 +6,7 @@ enum Status { CONTINUE, WON, LOST };
 unsigned int rollDie(void) {
     
     // rolling
-    unsigned int r;
-    r = 1 + (rand() % 6); // Returns a pseudo-random integer between 0 and RAND_MAX.
+    unsigned int r = 1 + (rand() % 6); // Returns a pseudo-random integer between 0 and RAND_MAX.
 
     return r;
 }
