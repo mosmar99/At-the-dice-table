@@ -1,7 +1,6 @@
 #include "mahmutHeaders.h"
 
 enum Status { CONTINUE, WON, LOST };
-enum ISHOLD { YES, NO };
 enum PlayerTurn {Human, Computer};
 
 // rolls one die
@@ -20,7 +19,6 @@ enum PlayerTurn switchTurns2(enum PlayerTurn playerTurn) {
 
 void pig(void) {
     enum Status gameState = CONTINUE;
-    enum ISHOLD isHolding = NO; 
     enum PlayerTurn playerTurn = Human; // per lab instructions
     unsigned int pHuman = 0, pComputer = 0, pTurnHuman = 0, pTurnComputer = 0, face; // p = points
     char choice;
@@ -28,11 +26,10 @@ void pig(void) {
     while (gameState == CONTINUE) {
         face = rollDie(); 
 
-        printf("The die throw equals: %u", face);
+        printf("\nThe die throw equals: %u\n", face);
 
         if (face == 1)
         {
-            isHolding = NO;
             playerTurn = switchTurns2(playerTurn);
             continue;
         } 
@@ -45,16 +42,23 @@ void pig(void) {
             }
         }
                
-        printf("%s", "Do you want to hold? [y/n]\n");
+        puts("\nDo you want to hold? [y/n]: ");
+        fgetc(stdin);
         scanf("%c", &choice);
 
-        while (choice != 'y' || choice != 'n')
-            if (choice == 'y')
+        if (choice == 'y')
+        {
+            if (playerTurn == Human)
             {
-                isHolding = YES;
+                pHuman += pTurnHuman;
+                gameState = switchTurns2(gameState);
             } else {
-                isHolding = NO;
+                pComputer += pTurnComputer;
+                gameState = switchTurns2(gameState);
             }
+                                            
+        } 
+
     }
 
 }
