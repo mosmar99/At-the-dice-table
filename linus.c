@@ -201,11 +201,11 @@ enum Status checkNPCStatus(unsigned int sum)
 unsigned int checkNPCSum(unsigned int playerSum, unsigned int npcSum)
 {
     if (npcSum >= 1 && npcSum <= 12 && npcSum == playerSum)
-        npcSum = 0; // rule 2
+        return 0; // rule 2
     else if (npcSum >= 14 && npcSum <= 24 && npcSum == playerSum)
-        npcSum = 12; // rule 3
+        return 12; // rule 3
     else if (npcSum == 25 && playerSum == 25)
-        npcSum = 14; // rule 4
+        return 14; // rule 4
     else
         return npcSum; // do nothing
 }
@@ -262,7 +262,10 @@ unsigned int pigsPlayerTurn()
             return playerTurnTotal; // rule 3
         die = rollDie(false);
         if (die == 1)
-            return 0;           // rule 1
+        {
+            printf("Total: %d\n\n", 0);
+            return 0; // rule 1
+        }
         playerTurnTotal += die; // rule 2
         printf("Total: %d\n\n", playerTurnTotal);
     }
