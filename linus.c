@@ -5,7 +5,7 @@
 #include <time.h>
 
 enum Status
-{
+{ // Status is ALWAYS from the perspective of the human player
     CONTINUE,
     WON,
     LOST
@@ -14,10 +14,9 @@ enum Status
 void craps();   // I added blank lines and delays in related functions to make the output more appealing and "exciting"
 int rollDice(); // only used in craps
 void abyss();
-enum Status checkPlayerStatus(unsigned int sum);                          // apply rules 1 and 5 on the human player
-unsigned int checkPlayerSum(unsigned int playerSum, unsigned int npcSum); // apply rules 2-4 on the human player
-enum Status checkNPCStatus(unsigned int sum);                             // apply rules 1 and 5 on the computer
-unsigned int checkNPCSum(unsigned int playerSum, unsigned int npcSum);    // apply rules 2-4 on the computer
+enum Status checkStatus(bool, unsigned int);             // apply rules 1 and 5
+unsigned int checkSum(bool, unsigned int, unsigned int); // apply rules 2-4
+void printAppliedRule(bool npc, unsigned int n);         // prints a message if a rule was applied
 void pigs();
 unsigned int pigsPlayerTurn();          // returns total points of a turn for the player
 unsigned int pigsNPCTurn(unsigned int); // returns total points of a turn for the npc
@@ -137,9 +136,9 @@ void abyss()
         if (playerSum + die <= 26)
         { // throws that yield sum > 26 doesn't count
             playerSum += die;
+            playerSum = checkSum(false, playerSum, npcSum); // check rules 2-4
             printf("Player sum: %d\n\n", playerSum);
-            playerSum = checkPlayerSum(playerSum, npcSum); // check rules 2-4
-            gameStatus = checkPlayerStatus(playerSum);     // check rules 1 and 5
+            gameStatus = checkStatus(false, playerSum); // check rules 1 and 5
             if (gameStatus != CONTINUE)
                 break; // disregard npc's turn if the game is over
         }
@@ -152,9 +151,9 @@ void abyss()
         if (npcSum + die <= 26)
         { // throws that yield sum > 26 doesn't count
             npcSum += die;
+            npcSum = checkSum(true, npcSum, playerSum); // check rules 2-4
             printf("NPC sum: %d\n", npcSum);
-            npcSum = checkNPCSum(playerSum, npcSum); // check rules 2-4
-            gameStatus = checkNPCStatus(npcSum);     // check rules 1 and 5
+            gameStatus = checkStatus(true, npcSum); // check rules 1 and 5
         }
         else
             printf("Threw discarded, yielded sum: %d\n", npcSum + die); // invalid throw
@@ -166,48 +165,53 @@ void abyss()
     sleep(2);
 }
 
-enum Status checkPlayerStatus(unsigned int sum)
-{
-    if (sum == 13)
-        return LOST; // rule 1
-    else if (sum == 26)
-        return WON; // rule 5
-    else
-        return CONTINUE; // do nothing
+enum Status checkStatus(bool npc, unsigned int sum)
+{ // Status is ALWAYS from the perspective of the human player
+    switch (sum)
+    {
+    case 13: // rule 1
+        if (npc)
+            return WON;
+        return LOST;
+    case 26: // rule 5
+        if (npc)
+            return LOST;
+        return WON;
+    default: // do nothing
+        return CONTINUE;
+    }
 }
 
-unsigned int checkPlayerSum(unsigned int playerSum, unsigned int npcSum)
+unsigned int checkSum(bool npc, unsigned int playerA, unsigned int playerB) // playerA is the individual doing the current turn, playerB is the opposing individual
 {
-    if (playerSum >= 1 && playerSum <= 12 && playerSum == npcSum)
+    if (playerA >= 1 && playerA <= 12 && playerA == playerB)
+    {
+        printAppliedRule(npc, 0);
         return 0; // rule 2
-    else if (playerSum >= 14 && playerSum <= 24 && playerSum == npcSum)
+    }
+    else if (playerA >= 14 && playerA <= 24 && playerA == playerB)
+    {
+        printAppliedRule(npc, 12);
         return 12; // rule 3
-    else if (playerSum == 25 && npcSum == 25)
+    }
+    else if (playerA == 25 && playerB == 25)
+    {
+        printAppliedRule(npc, 14);
         return 14; // rule 4
+    }
     else
-        return playerSum; // do nothing
+        return playerA; // do nothing
 }
 
-enum Status checkNPCStatus(unsigned int sum)
+void printAppliedRule(bool npc, unsigned int n)
 {
-    if (sum == 26)
-        return LOST; // rule 5
-    else if (sum == 13)
-        return WON; // rule 1
+    sleep(1);
+    if (npc)
+        printf("%s", "NPC ");
     else
-        return CONTINUE; // do nothing
-}
-
-unsigned int checkNPCSum(unsigned int playerSum, unsigned int npcSum)
-{
-    if (npcSum >= 1 && npcSum <= 12 && npcSum == playerSum)
-        return 0; // rule 2
-    else if (npcSum >= 14 && npcSum <= 24 && npcSum == playerSum)
-        return 12; // rule 3
-    else if (npcSum == 25 && playerSum == 25)
-        return 14; // rule 4
-    else
-        return npcSum; // do nothing
+        printf("%s", "Player ");
+    printf("back to %d points!\n", n);
+    sleep(1);
 }
 
 void pigs()
@@ -311,7 +315,7 @@ void displayMainMenu()
     puts("  Enter 1 for Craps");
     puts("  Enter 2 for The Abyss");
     puts("  Enter 3 for Pig");
-    puts("Enter 0 to Quit");
+    puts("  Enter 0 to Quit");
 }
 
 unsigned int rollDie(bool npc)
