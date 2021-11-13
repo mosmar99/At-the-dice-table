@@ -140,8 +140,8 @@ void abyss()
             printf("Player sum: %d\n\n", playerSum);
             playerSum = checkPlayerSum(playerSum, npcSum); // check rules 2-4
             gameStatus = checkPlayerStatus(playerSum);     // check rules 1 and 5
-            if (gameStatus == LOST)
-                break; // disregard npc's turn
+            if (gameStatus != CONTINUE)
+                break; // disregard npc's turn if the game is over
         }
         else
             printf("Threw discarded, yielded sum: %d\n\n", playerSum + die); // invalid throw
@@ -228,7 +228,7 @@ void pigs()
         if (playerScore >= 100)
         {
             gameStatus = WON;
-            break; // disregard npc's turn
+            break; // disregard npc's turn if the game is over
         }
 
         // npc's turn
