@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include <unistd.h> // sleep(unsigned int seconds)      (_sleep() from stdlib.h is deprecated)
+#include <unistd.h> // sleep(unsigned int seconds)      _sleep() from stdlib.h is deprecated, but works (gives warning)
 #include <time.h>
 
 enum Status
