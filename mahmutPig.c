@@ -1,137 +1,214 @@
 #include "mahmutHeaders.h"
 
-enum Status { CONTINUE, WON, LOST };
-enum PlayerTurn {HUMAN, COMPUTER};
+enum Status
+{
+    CONTINUE,
+    STOP
+};
+enum PlayerTurn
+{
+    HUMAN,
+    NPC
+};
 
 // rolls one die
 unsigned int rollDie();
 
 // switches players between human and computer
-enum PlayerTurn switchTurns2(enum PlayerTurn playerTurn) {
+enum PlayerTurn switchTurns2(enum PlayerTurn playerTurn)
+{
     switch (playerTurn)
     {
     case HUMAN:
-        return COMPUTER;
+        return NPC;
     default:
         return HUMAN;
     }
 }
 
-void printPointsPlayer(enum PlayerTurn playerTurn, unsigned int pHuman, unsigned int pComputer, unsigned int pTurnHuman, unsigned int pTurnComputer, unsigned int face) {
-    if (playerTurn == HUMAN)
+
+_Bool checkIsOne(unsigned int face) {
+    return 1 == face;
+}
+
+unsigned int updateTurnPoints(enum PlayerTurn playerTurn, unsigned int pTurnHuman, unsigned int pTurnNPC, unsigned int face) {
+    switch (playerTurn)
+    {
+    case HUMAN:
+        return pTurnHuman + face;
+    
+    case NPC:
+        return pTurnNPC + face;
+
+    default:
+        fprintf(stderr, "\nThis game only contains two player, the human and the NPC. Error caused by ENUM overflow.\n");
+        break;
+        
+    }
+}
+
+unsigned int updateTotPoints(enum PlayerTurn playerTurn, unsigned int pTotHuman, unsigned int pTotNPC, unsigned int face) {
+    switch (playerTurn)
+    {
+    case HUMAN:
+        return pTotHuman + face;
+    
+    case NPC:
+        return pTotNPC + face;
+
+    default:
+        fprintf(stderr, "\nThis game only contains two player, the human and the NPC. Error caused by ENUM overflow.\n");
+        break;
+        
+    }
+}
+
+void printPigState(enum PlayerTurn playerTurn, unsigned int pTotHuman, unsigned int pTotNPC, unsigned int pTurnHuman, unsigned int pTurnNPC, unsigned int face) {
+    if (playerTurn == HUMAN && face >= 2)
     {   
         unsigned int oldTurnPoints = pTurnHuman - face;
-        printf("\nHUMAN: %u\tCOMPUTER: %u", pHuman, pComputer);
+        printf("\nHUMAN: %u\tCOMPUTER: %u", pTotHuman, pTotNPC);
         printf("\nHUMAN PLAYING:");
         printf("\n  The die throw equals: %u", face);        
         printf("\n  Points for Human player under current turn is: %u + %u = %u\n", oldTurnPoints, face, pTurnHuman);
-    } 
-    else
-    {
-        unsigned int oldTurnPoints = pTurnComputer - face;
-        printf("\nHUMAN: %u\tCOMPUTER: %u", pHuman, pComputer);
-        printf("\nCOMPUTER PLAYING:");
-        printf("\n  The die throw equals: %u", face);        
-        printf("\n  Points for Computer player under current turn is: %u + %u = %u\n", oldTurnPoints, face, pTurnComputer);
-    }
-}
-
-void printDiceOne (enum PlayerTurn playerTurn, unsigned int pHuman, unsigned int pComputer, unsigned int face) {
-        if (playerTurn == HUMAN)
-    {   
-        unsigned int points = 0;
-        printf("\nHUMAN: %u\tCOMPUTER: %u", pHuman, pComputer);
+    } else if (playerTurn == HUMAN && face == 1){
+        printf("\nHUMAN: %u\tCOMPUTER: %u", pTotHuman, pTotNPC);
         printf("\nHUMAN PLAYING:");
-        printf("\n  The die throw equals: %u", face);        
-        printf("\n  Points for Human player under current turn is: %u\n", points);
-    } 
-    else
-    {
-        unsigned int points = 0;
-        printf("\nHUMAN: %u\tCOMPUTER: %u", pHuman, pComputer);
+        printf("\n  The die throw equals: %u\n", face);        
+    } else if (playerTurn == NPC && face >= 2) {
+        unsigned int oldTurnPoints = pTurnNPC - face;
+        printf("\nHUMAN: %u\tCOMPUTER: %u", pTotHuman, pTotNPC); 
         printf("\nCOMPUTER PLAYING:");
         printf("\n  The die throw equals: %u", face);        
-        printf("\n  Points for Computer player under current turn is: %u\n", points);
+        printf("\n  Points for Computer player under current turn is: %u + %u = %u\n", oldTurnPoints, face, pTurnNPC);
+    } else if (playerTurn == NPC && face == 1) {
+        printf("\nHUMAN: %u\tCOMPUTER: %u", pTotHuman, pTotNPC);
+        printf("\nCOMPUTER PLAYING:");
+        printf("\n  The die throw equals: %u\n", face);      
+    } else {
+        fprintf(stderr, "\n Unexpected error within \"printPigState\" function.\n");
     }
 }
 
-void pig(void) {
-    enum Status gameState = CONTINUE;
-    enum PlayerTurn playerTurn = HUMAN; // per lab instructions
-    unsigned int pHuman = 0, pComputer = 0, pTurnHuman = 0, pTurnComputer = 0, face; // p = points
-    char choice;
-    bool isNotValidInput = true;
+char promptUser(char choice) {
+    printf("Do you want to hold (y/n): ");
+    scanf(" %c", &choice);
+    return choice;
+}
 
-    while (gameState == CONTINUE) {
-
-        face = rollDie(); 
-
-        if (face == 1)
-        {
-            printDiceOne(playerTurn, pHuman, pComputer, face);
-            if (playerTurn == HUMAN)
-            {
-                pTurnHuman = 0;
-            } else {
-                pTurnComputer = 0;
-            }
-            playerTurn = switchTurns2(playerTurn);
-            continue;
-        } 
-        else 
-        {
-            if (playerTurn == HUMAN) {
-                pTurnHuman += face;
-            } else {
-                pTurnComputer += face;
-            }
-        }
-               
-        if ( pHuman >= 100 ) {
-            printf("\nHUMAN WON and COMPUTER LOST!\nTHE END.");
-            gameState = WON;
-        } 
-
-        if ( pComputer >= 100 ) {
-            printf("\nHUMAN LOST and COMPUTER WON!\nTHE END.");
-            gameState = LOST;
-        } 
-
-        printPointsPlayer(playerTurn, pHuman, pComputer, pTurnHuman, pTurnComputer, face);
-
-        int count = 0;
-        while (isNotValidInput) {
-            if (count > 0) 
-            {
-                printf("\n--->NOT valid input. Please, enter 'y' (yes) or 'n' (no): ");
-            } else  {
-                printf("Do you want to hold? [y/n]: ");
-            }
-            scanf(" %c", &choice);
-            if (choice == 'y' || choice == 'n')
-            {
-                isNotValidInput = false;
-            }
-            count++;
-        }
-
-        isNotValidInput = true;
-        // printf("\nDo you want to hold? [y/n]: ");
-        // scanf(" %c", &choice);
-
-        if (choice == 'y')
-        {
-            if (playerTurn == HUMAN)
-            {
-                pHuman += pTurnHuman;
-                pTurnHuman = 0;
-                playerTurn = switchTurns2(playerTurn);
-            } else {
-                pComputer += pTurnComputer;
-                pTurnComputer = 0;
-                playerTurn = switchTurns2(playerTurn);
-            }                                            
-        } 
+enum Status didSomebodyWin(unsigned int pTotHuman, unsigned int pTotNPC) {
+    if (pTotHuman >= 100)
+    {
+        printf("\nHuman has WON.\n\n");
+        return STOP;
     }
+    else if (pTotNPC >= 100)
+    {
+        printf("\nNPC has WON.\n\n");
+        return STOP;
+    }
+    else
+    {
+        return CONTINUE;
+    }     
+    
+}
 
+void pig(void)
+{
+    enum Status gameState = CONTINUE;
+    enum PlayerTurn playerTurn = HUMAN;                                                       // per lab instructions
+    unsigned int pTotHuman = 0, pTotNPC = 0, pTurnHuman = 0, pTurnNPC = 0, face, counter = 0, factor = 1000000, trd; // p = points
+    char choice;
+    float delay = 0.8;
+    _Bool isNotValidInput = true, isOne = false;
+
+
+    while (gameState == CONTINUE)
+    {
+        switch (playerTurn)
+        {
+        case HUMAN:
+            face = rollDie();
+            isOne = checkIsOne(face);
+            if (isOne == false)
+            {
+                pTurnHuman = updateTurnPoints(playerTurn, pTurnHuman, pTurnNPC, face);
+                printPigState(playerTurn, pTotHuman, pTotNPC, pTurnHuman, pTurnNPC, face);
+                choice = promptUser(choice); // also check for invalid input, if invalid ask, ask again until valid (y/n)
+                if (choice == 'y')
+                {
+                    pTotHuman = updateTotPoints(playerTurn, pTotHuman, pTotNPC, pTurnHuman);
+                    pTurnHuman = 0;                                                        
+                    playerTurn = switchTurns2(playerTurn);                         
+                } // else choice was 'n', playerTurn is still HUMAN
+            }
+            else
+            {
+                printPigState(playerTurn, pTotHuman, pTotNPC, pTurnHuman, pTurnNPC, face);
+                playerTurn = switchTurns2(playerTurn);
+            }
+            break;
+
+        case NPC: // there are only two players, don't need defualt
+            if (counter < 2)
+            {
+                face = rollDie();
+                if(checkIsOne(face) == false) {
+                    pTurnNPC = updateTurnPoints(playerTurn, pTurnHuman, pTurnNPC, face);
+                    printPigState(playerTurn, pTotHuman, pTotNPC, pTurnHuman, pTurnNPC, face);
+                    counter++; // do first two rounds
+                } else {
+                    printPigState(playerTurn, pTotHuman, pTotNPC, pTurnHuman, pTurnNPC, face);
+                    pTurnNPC = 0;
+                    counter = 0;
+                    playerTurn = switchTurns2(playerTurn);
+                }
+            }
+            else
+            {
+                trd = rand() % 2;
+                if (trd == 1)
+                {
+                    face = rollDie();
+                    if (checkIsOne(face) == false)
+                    {
+                        pTurnNPC = updateTurnPoints(playerTurn, pTurnHuman, pTurnNPC, face);
+                        printPigState(playerTurn, pTotHuman, pTotNPC, pTurnHuman, pTurnNPC, face);                    
+                        pTotNPC = pTurnNPC;
+                        pTurnNPC = counter = 0;
+                        playerTurn = switchTurns2(playerTurn);
+                    } else {
+                        printPigState(playerTurn, pTotHuman, pTotNPC, pTurnHuman, pTurnNPC, face);
+                        pTurnNPC = counter = 0;
+                        playerTurn = switchTurns2(playerTurn);
+                    }
+                } 
+                else
+                {
+                    pTotNPC = pTurnNPC;
+                    pTurnNPC = 0;
+                    playerTurn = switchTurns2(playerTurn);
+                }                
+            }
+            // the optimal is 21, 15+6=21, we don't want to roll above 21, 6+6=12<=12, atleast 2 rounds, depending on context, more will be added, // f(x)=2*x/(1+x*x)
+            break;
+
+        default:
+            fprintf(stderr, "\nThis game only contains two player, the human and the NPC. Error caused by ENUM overflow.\n");
+            break;
+
+        }
+        if (pTotHuman >= 100)
+        {
+            printf("\nHuman has WON: POINTS = %u\n\n", pTotHuman);
+            gameState = STOP;
+        }
+
+        if (pTotNPC >= 100)
+        {
+            printf("\nNPC has WON: POINTS = %u\n\n", pTotNPC);
+            gameState = STOP;
+        }
+    }
 }
