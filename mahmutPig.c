@@ -12,7 +12,12 @@ enum PlayerTurn
 };
 
 // rolls one die
-unsigned int rollDie();
+unsigned int rollPigDie(){
+    // rolling
+    unsigned int r = 1 + (rand() % 6); // Returns a pseudo-random integer between 0 and RAND_MAX.
+
+    return r;
+}
 
 // switches players between human and computer
 enum PlayerTurn switchTurns2(enum PlayerTurn playerTurn)
@@ -47,14 +52,14 @@ unsigned int updateTurnPoints(enum PlayerTurn playerTurn, unsigned int pTurnHuma
     }
 }
 
-unsigned int updateTotPoints(enum PlayerTurn playerTurn, unsigned int pTotHuman, unsigned int pTotNPC, unsigned int face) {
+unsigned int updateTotPoints(enum PlayerTurn playerTurn, unsigned int pTotHuman, unsigned int pTotNPC, unsigned int pTurn) {
     switch (playerTurn)
     {
     case HUMAN:
-        return pTotHuman + face;
+        return pTotHuman + pTurn;
     
     case NPC:
-        return pTotNPC + face;
+        return pTotNPC + pTurn;
 
     default:
         fprintf(stderr, "\nThis game only contains two player, the human and the NPC. Error caused by ENUM overflow.\n");
@@ -129,7 +134,7 @@ void pig(void)
         switch (playerTurn)
         {
         case HUMAN:
-            face = rollDie();
+            face = rollPigDie();
             isOne = checkIsOne(face);
             if (isOne == false)
             {
@@ -146,6 +151,7 @@ void pig(void)
             else
             {
                 printPigState(playerTurn, pTotHuman, pTotNPC, pTurnHuman, pTurnNPC, face);
+                pTurnHuman = 0;
                 playerTurn = switchTurns2(playerTurn);
             }
             break;
@@ -153,7 +159,7 @@ void pig(void)
         case NPC: // there are only two players, don't need defualt
             if (counter < 2)
             {
-                face = rollDie();
+                face = rollPigDie();
                 if(checkIsOne(face) == false) {
                     pTurnNPC = updateTurnPoints(playerTurn, pTurnHuman, pTurnNPC, face);
                     printPigState(playerTurn, pTotHuman, pTotNPC, pTurnHuman, pTurnNPC, face);
@@ -170,12 +176,12 @@ void pig(void)
                 trd = rand() % 2;
                 if (trd == 1)
                 {
-                    face = rollDie();
+                    face = rollPigDie();
                     if (checkIsOne(face) == false)
                     {
                         pTurnNPC = updateTurnPoints(playerTurn, pTurnHuman, pTurnNPC, face);
                         printPigState(playerTurn, pTotHuman, pTotNPC, pTurnHuman, pTurnNPC, face);                    
-                        pTotNPC = pTurnNPC;
+                        pTotNPC = updateTotPoints(playerTurn, pTotHuman, pTotNPC, pTurnNPC);
                         pTurnNPC = counter = 0;
                         playerTurn = switchTurns2(playerTurn);
                     } else {
@@ -186,8 +192,8 @@ void pig(void)
                 } 
                 else
                 {
-                    pTotNPC = pTurnNPC;
-                    pTurnNPC = 0;
+                    pTotNPC = updateTotPoints(playerTurn, pTotHuman, pTotNPC, pTurnNPC);
+                    pTurnNPC = counter = 0;
                     playerTurn = switchTurns2(playerTurn);
                 }                
             }

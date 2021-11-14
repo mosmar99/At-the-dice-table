@@ -15,7 +15,7 @@ enum Status
 unsigned int rollDie(void)
 {
     // rolling
-    srand(getpid());
+    //srand(time(NULL));
     unsigned int r = 1 + (rand() % 6); // Returns a pseudo-random integer between 0 and RAND_MAX.
 
     return r;
