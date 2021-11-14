@@ -96,18 +96,18 @@ void printPigState(enum PlayerTurn playerTurn, unsigned int pTotHuman, unsigned 
 }
 
 char promptUser(char choice) {
-    int counter = 1;
-    do {
-        if (counter == 1)
-        {
-            printf("Do you want to hold (y/n): ");
-            scanf(" %c", &choice);
-            counter++;
-        } else {
-            printf("\nDo you want to hold (y/n): ");
-            scanf(" %c", &choice);
+    while (true) {
+
+        printf("\n--->Do you want to hold (y/n): ");
+        scanf(" %c", &choice);
+
+        if(choice == 'y') {
+            break;
         }
-    } while (choice != 'y' || choice != 'n');
+        if(choice == 'n') {
+            break;
+        }        
+    } 
     return choice;
 }
 
