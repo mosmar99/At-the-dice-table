@@ -169,11 +169,11 @@ void abyss(void)
         {
             if (playerTurn == A)
             {
-                pA = 12;
+                pA = 14;
             }
             else
             {
-                pB = 12;
+                pB = 14;
             }
         }
         playerTurn = switchTurns(playerTurn);

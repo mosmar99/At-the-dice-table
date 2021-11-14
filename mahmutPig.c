@@ -96,8 +96,18 @@ void printPigState(enum PlayerTurn playerTurn, unsigned int pTotHuman, unsigned 
 }
 
 char promptUser(char choice) {
-    printf("Do you want to hold (y/n): ");
-    scanf(" %c", &choice);
+    int counter = 1;
+    do {
+        if (counter == 1)
+        {
+            printf("Do you want to hold (y/n): ");
+            scanf(" %c", &choice);
+            counter++;
+        } else {
+            printf("\nDo you want to hold (y/n): ");
+            scanf(" %c", &choice);
+        }
+    } while (choice != 'y' || choice != 'n');
     return choice;
 }
 
@@ -126,7 +136,7 @@ void pig(void)
     unsigned int pTotHuman = 0, pTotNPC = 0, pTurnHuman = 0, pTurnNPC = 0, face, counter = 0, factor = 1000000, trd; // p = points
     char choice;
     float delay = 0.8;
-    _Bool isNotValidInput = true, isOne = false;
+    _Bool isOne;
 
 
     while (gameState == CONTINUE)
@@ -134,6 +144,7 @@ void pig(void)
         switch (playerTurn)
         {
         case HUMAN:
+            usleep(delay * factor);
             face = rollPigDie();
             isOne = checkIsOne(face);
             if (isOne == false)
@@ -150,6 +161,7 @@ void pig(void)
             }
             else
             {
+                usleep(delay * factor);
                 printPigState(playerTurn, pTotHuman, pTotNPC, pTurnHuman, pTurnNPC, face);
                 pTurnHuman = 0;
                 playerTurn = switchTurns2(playerTurn);
@@ -159,12 +171,14 @@ void pig(void)
         case NPC: // there are only two players, don't need defualt
             if (counter < 2)
             {
+                usleep(delay * factor);
                 face = rollPigDie();
                 if(checkIsOne(face) == false) {
                     pTurnNPC = updateTurnPoints(playerTurn, pTurnHuman, pTurnNPC, face);
                     printPigState(playerTurn, pTotHuman, pTotNPC, pTurnHuman, pTurnNPC, face);
                     counter++; // do first two rounds
                 } else {
+                    usleep(delay * factor);
                     printPigState(playerTurn, pTotHuman, pTotNPC, pTurnHuman, pTurnNPC, face);
                     pTurnNPC = 0;
                     counter = 0;
@@ -179,12 +193,14 @@ void pig(void)
                     face = rollPigDie();
                     if (checkIsOne(face) == false)
                     {
+                        usleep(delay * factor);
                         pTurnNPC = updateTurnPoints(playerTurn, pTurnHuman, pTurnNPC, face);
                         printPigState(playerTurn, pTotHuman, pTotNPC, pTurnHuman, pTurnNPC, face);                    
                         pTotNPC = updateTotPoints(playerTurn, pTotHuman, pTotNPC, pTurnNPC);
                         pTurnNPC = counter = 0;
                         playerTurn = switchTurns2(playerTurn);
                     } else {
+                        usleep(delay * factor);
                         printPigState(playerTurn, pTotHuman, pTotNPC, pTurnHuman, pTurnNPC, face);
                         pTurnNPC = counter = 0;
                         playerTurn = switchTurns2(playerTurn);
@@ -192,6 +208,7 @@ void pig(void)
                 } 
                 else
                 {
+                    usleep(delay * factor);
                     pTotNPC = updateTotPoints(playerTurn, pTotHuman, pTotNPC, pTurnNPC);
                     pTurnNPC = counter = 0;
                     playerTurn = switchTurns2(playerTurn);
@@ -206,13 +223,15 @@ void pig(void)
 
         }
         if (pTotHuman >= 100)
-        {
+        {   
+            usleep(delay * factor);
             printf("\nHuman has WON: POINTS = %u\n\n", pTotHuman);
             gameState = STOP;
         }
 
         if (pTotNPC >= 100)
         {
+            usleep(delay * factor);
             printf("\nNPC has WON: POINTS = %u\n\n", pTotNPC);
             gameState = STOP;
         }
